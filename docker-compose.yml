@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  server:
+    build:
+      context: ./1/server
+      dockerfile: Dockerfile
+    container_name: fastify-server
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./1/client
+      dockerfile: Dockerfile
+      args:
+        VITE_SERVER_BASE_URL: http://server:3000/
+    container_name: vite-client
+    ports:
+      - '80:80'
+    depends_on:
+      - server
+    restart: unless-stopped
